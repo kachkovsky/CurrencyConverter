@@ -19,6 +19,65 @@ public class HttpClient {
         return Holder.INSTANCE;
     }
 
+    public static class RequestParameters {
+
+        public enum CacheMode {
+            DEFAULT,
+            FROM_CACHE,
+            FROM_NET;
+        }
+
+        private String url;
+        private Integer connectionTimeout;
+        private Integer readTimeout;
+        private boolean useCache;
+        private CacheMode cacheMode;
+
+        public RequestParameters() {
+            useCache = true;
+        }
+
+        public boolean isUseCache() {
+            return useCache;
+        }
+
+        public void setUseCache(boolean useCache) {
+            this.useCache = useCache;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public Integer getConnectionTimeout() {
+            return connectionTimeout;
+        }
+
+        public void setConnectionTimeout(Integer connectionTimeout) {
+            this.connectionTimeout = connectionTimeout;
+        }
+
+        public Integer getReadTimeout() {
+            return readTimeout;
+        }
+
+        public void setReadTimeout(Integer readTimeout) {
+            this.readTimeout = readTimeout;
+        }
+
+        public CacheMode getCacheMode() {
+            return cacheMode;
+        }
+
+        public void setCacheMode(CacheMode cacheMode) {
+            this.cacheMode = cacheMode;
+        }
+    }
+
     public static class Response {
         private Integer code;
         private byte[] body;
@@ -59,10 +118,10 @@ public class HttpClient {
     private HttpClient() {
     }
 
-    public Response doRequest(String url) {
+    public Response doRequest(RequestParameters requestParams) {
         Response response = null;
         try {
-            response = handleResponse(openConnection(url));
+            response = handleResponse(openConnection(requestParams));
         } catch (IOException e) {
             Log.e(TAG, "response parsing error", e);
             response = new Response();
@@ -71,12 +130,26 @@ public class HttpClient {
         return response;
     }
 
-    private HttpURLConnection openConnection(String url) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        connection.setUseCaches(false);
+    private HttpURLConnection openConnection(RequestParameters requestParams) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(requestParams.getUrl()).openConnection();
+        connection.setUseCaches(requestParams.isUseCache());
         connection.setDoInput(true);
-        connection.setConnectTimeout(CONNECTION_TIMEOUT);
-        connection.setReadTimeout(READ_TIMEOUT);
+        connection.setDoOutput(false);
+        connection.setConnectTimeout(requestParams.getConnectionTimeout() != null ? requestParams.getConnectionTimeout() : CONNECTION_TIMEOUT);
+        connection.setReadTimeout(requestParams.getReadTimeout() != null ? requestParams.getReadTimeout() : READ_TIMEOUT);
+        if (requestParams.isUseCache()) {
+            switch (requestParams.cacheMode) {
+                case DEFAULT:
+                    connection.addRequestProperty("Cache-Control", "max-stale=2419200");
+                    break;
+                case FROM_CACHE:
+                    connection.addRequestProperty("Cache-Control", "max-stale=2419200, only-if-cached");
+                    break;
+                case FROM_NET:
+                    connection.addRequestProperty("Cache-Control", "no-cache");
+                    break;
+            }
+        }
         return connection;
     }
 

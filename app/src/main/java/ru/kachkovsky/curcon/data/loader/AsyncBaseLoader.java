@@ -23,6 +23,12 @@ public abstract class AsyncBaseLoader<T> extends AsyncTaskLoader<T> {
     }
 
     @Override
+    protected T onLoadInBackground() {
+        data = super.onLoadInBackground();
+        return data;
+    }
+
+    @Override
     public void stopLoading() {
         super.stopLoading();
         cancelLoad();
