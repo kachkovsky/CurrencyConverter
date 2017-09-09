@@ -7,7 +7,7 @@ import ru.kachkovsky.curcon.data.http.HttpClient.RequestParameters;
 import ru.kachkovsky.curcon.data.http.XmlResponseParser;
 
 public class CbrDailyLoader extends AsyncBaseLoader {
-    private static String TAG = CbrDailyLoader.class.getSimpleName();
+    private static final String TAG = CbrDailyLoader.class.getSimpleName();
 
     private CacheDownloader<CurrencyList> downloader = new CacheDownloader<>();
     XmlResponseParser xmlResponseParser = new XmlResponseParser(CurrencyList.class);
