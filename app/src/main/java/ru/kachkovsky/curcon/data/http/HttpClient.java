@@ -78,9 +78,9 @@ public class HttpClient {
         }
     }
 
-    public static class Response {
+    public static class Response<T> {
         private Integer code;
-        private byte[] body;
+        private T result;
         private Exception error;
 
         public Exception getError() {
@@ -103,12 +103,12 @@ public class HttpClient {
             this.code = code;
         }
 
-        public byte[] getBody() {
-            return body;
+        public T getResult() {
+            return result;
         }
 
-        public void setBody(byte[] body) {
-            this.body = body;
+        public void setResult(T result) {
+            this.result = result;
         }
     }
 
@@ -118,10 +118,10 @@ public class HttpClient {
     private HttpClient() {
     }
 
-    public Response doRequest(RequestParameters requestParams) {
+    public Response doRequest(RequestParameters requestParams, ResponseParser parser) {
         Response response = null;
         try {
-            response = handleResponse(openConnection(requestParams));
+            response = handleResponse(openConnection(requestParams), parser);
         } catch (IOException e) {
             Log.e(TAG, "response parsing error", e);
             response = new Response();
@@ -153,13 +153,13 @@ public class HttpClient {
         return connection;
     }
 
-    private Response handleResponse(HttpURLConnection connection) throws IOException {
+    private <T> Response<T> handleResponse(HttpURLConnection connection, ResponseParser<T> parser) throws IOException {
         Response response = new Response();
         response.setCode(connection.getResponseCode());
         try {
-            response.setBody(streamToBytes(connection.getInputStream()));
-        } catch (IOException e) {
-            Log.e(TAG, "response body parsing error", e);
+            response.setResult(parser.parseResponse(connection));
+        } catch (Exception e) {
+            Log.e(TAG, "response result parsing error", e);
             response.setError(e);
         } finally {
             connection.disconnect();

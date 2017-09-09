@@ -9,8 +9,8 @@ import ru.kachkovsky.curcon.data.http.XmlResponseParser;
 public class CbrDailyLoader extends AsyncBaseLoader {
     private static String TAG = CbrDailyLoader.class.getSimpleName();
 
-    private CacheDownloader<CurrencyList> downloader = new CacheDownloader<>(CurrencyList.class);
-    XmlResponseParser xmlResponseParser = new XmlResponseParser();
+    private CacheDownloader<CurrencyList> downloader = new CacheDownloader<>();
+    XmlResponseParser xmlResponseParser = new XmlResponseParser(CurrencyList.class);
 
     public CbrDailyLoader(Context context) {
         super(context);
