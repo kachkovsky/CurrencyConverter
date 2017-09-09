@@ -9,11 +9,14 @@ import ru.kachkovsky.curcon.data.http.XmlResponseParser;
 public class CbrDailyLoader extends AsyncBaseLoader {
     private static String TAG = CbrDailyLoader.class.getSimpleName();
 
+    private Context ctx;
+
     private CacheDownloader<CurrencyList> downloader = new CacheDownloader<>(CurrencyList.class);
     XmlResponseParser xmlResponseParser = new XmlResponseParser();
 
     public CbrDailyLoader(Context context) {
         super(context);
+        this.ctx = context;
     }
 
     @Override
@@ -23,7 +26,7 @@ public class CbrDailyLoader extends AsyncBaseLoader {
             deliverResult(data);
         } else {
             RequestParameters requestParameters = getRequestParameters();
-            CurrencyList currencyList = downloader.doRequestOnlyFromCache(requestParameters, xmlResponseParser);
+            CurrencyList currencyList = downloader.doRequestOnlyFromCache(ctx, requestParameters, xmlResponseParser);
             if (currencyList != null) {
                 deliverResult(currencyList);
             }
@@ -34,7 +37,7 @@ public class CbrDailyLoader extends AsyncBaseLoader {
     @Override
     public Object loadInBackground() {
         RequestParameters requestParameters = getRequestParameters();
-        return downloader.doRequestOnlyFromNet(requestParameters, xmlResponseParser);
+        return downloader.doRequestOnlyFromNet(ctx, requestParameters, xmlResponseParser);
     }
 
     private RequestParameters getRequestParameters() {

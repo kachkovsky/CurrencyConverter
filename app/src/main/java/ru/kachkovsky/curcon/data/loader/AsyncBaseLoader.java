@@ -7,7 +7,6 @@ import android.support.v4.content.AsyncTaskLoader;
 public abstract class AsyncBaseLoader<T> extends AsyncTaskLoader<T> {
 
     protected T data;
-
     public AsyncBaseLoader(Context context) {
         super(context);
     }

@@ -11,12 +11,12 @@ public class CurApplication extends Application {
     private static String TAG = CurApplication.class.getSimpleName();
     public void onCreate() {
         super.onCreate();
-        try {
-            File httpCacheDir = new File(this.getCacheDir(), "http");
-            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-            HttpResponseCache.install(httpCacheDir, httpCacheSize);
-        } catch (IOException e) {
-            Log.i(TAG, "HTTP response cache installation failed:", e);
-        }
+//        try {
+//            File httpCacheDir = new File(this.getCacheDir(), "http");
+//            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+//            HttpResponseCache.install(httpCacheDir, httpCacheSize);
+//        } catch (IOException e) {
+//            Log.i(TAG, "HTTP response cache installation failed:", e);
+//        }
     }
 }

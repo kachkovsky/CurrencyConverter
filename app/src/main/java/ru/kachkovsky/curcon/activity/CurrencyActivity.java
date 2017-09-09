@@ -29,7 +29,7 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<CurrencyList> loader, CurrencyList data) {
-        Log.d(TAG,"Load finished");
+        Log.d(TAG, String.valueOf("Load finished"+ data!=null));
     }
 
     @Override

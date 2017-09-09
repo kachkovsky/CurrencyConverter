@@ -1,9 +1,17 @@
 package ru.kachkovsky.curcon.data.loader;
 
+import android.content.Context;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import ru.kachkovsky.curcon.data.http.HttpClient;
-import ru.kachkovsky.curcon.data.http.HttpClient.RequestParameters.CacheMode;
 import ru.kachkovsky.curcon.data.http.HttpClient.Response;
 import ru.kachkovsky.curcon.data.http.ResponseParser;
 
@@ -16,23 +24,46 @@ public class CacheDownloader<T> {
         this.typeParameterClass = typeParameterClass;
     }
 
-    public T doRequestOnlyFromCache(HttpClient.RequestParameters requestParams, ResponseParser parser) {
-        requestParams.setUseCache(true);
-        requestParams.setCacheMode(CacheMode.FROM_CACHE);
-        Response response = HttpClient.getInstance().doRequest(requestParams);
-        if (response.getError() != null) {
-            return null;
+    public T doRequestOnlyFromCache(Context ctx, HttpClient.RequestParameters requestParams, ResponseParser parser) {
+        //requestParams.setUseCache(true);
+        //requestParams.setCacheMode(CacheMode.FROM_CACHE);
+        T t=null;
+        try {
+            String fileName = URLEncoder.encode(requestParams.getUrl(), "UTF-8");
+            t = parser.parseResponse(typeParameterClass, new FileInputStream(new File(ctx.getCacheDir(), fileName)));
+        } catch (UnsupportedEncodingException e) {
+            Log.d(TAG, "Cache error", e);
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "Cache error", e);
+        } catch (Exception e) {
+            Log.d(TAG, "Cache error", e);
         }
-        return parseResponse(parser, response);
+        return t;
     }
 
-    public T doRequestOnlyFromNet(HttpClient.RequestParameters requestParams, ResponseParser parser) {
-        requestParams.setUseCache(true);
-        requestParams.setCacheMode(CacheMode.FROM_NET);
+    public T doRequestOnlyFromNet(Context ctx, HttpClient.RequestParameters requestParams, ResponseParser parser) {
+        //requestParams.setUseCache(true);
+        //requestParams.setCacheMode(CacheMode.FROM_NET);
         Response response = HttpClient.getInstance().doRequest(requestParams);
         if (response.getError() != null) {
             return null;
         }
+        String x=new String(response.getBody());
+        try {
+            String fileName = URLEncoder.encode(requestParams.getUrl(), "UTF-8");
+            FileOutputStream stream = new FileOutputStream(new File(ctx.getCacheDir(), fileName));
+            try {
+                stream.write(response.getBody());
+            } finally {
+                stream.close();
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        response.getBody();
         return parseResponse(parser, response);
     }
 

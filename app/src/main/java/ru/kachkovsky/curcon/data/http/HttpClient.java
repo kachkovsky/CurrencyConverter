@@ -132,24 +132,11 @@ public class HttpClient {
 
     private HttpURLConnection openConnection(RequestParameters requestParams) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(requestParams.getUrl()).openConnection();
-        connection.setUseCaches(requestParams.isUseCache());
+        connection.setUseCaches(false);
         connection.setDoInput(true);
         connection.setDoOutput(false);
         connection.setConnectTimeout(requestParams.getConnectionTimeout() != null ? requestParams.getConnectionTimeout() : CONNECTION_TIMEOUT);
         connection.setReadTimeout(requestParams.getReadTimeout() != null ? requestParams.getReadTimeout() : READ_TIMEOUT);
-        if (requestParams.isUseCache()) {
-            switch (requestParams.cacheMode) {
-                case DEFAULT:
-                    connection.addRequestProperty("Cache-Control", "max-stale=2419200");
-                    break;
-                case FROM_CACHE:
-                    connection.addRequestProperty("Cache-Control", "max-stale=2419200, only-if-cached");
-                    break;
-                case FROM_NET:
-                    connection.addRequestProperty("Cache-Control", "no-cache");
-                    break;
-            }
-        }
         return connection;
     }
 
