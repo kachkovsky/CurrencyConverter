@@ -5,7 +5,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(name="Valute")
-public class Currency {
+public class CurrencyBean {
 
     @Attribute(name="ID")
     private String id;

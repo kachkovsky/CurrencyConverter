@@ -1,7 +1,6 @@
 package ru.kachkovsky.curcon.data.bean;
 
 import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Default;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
@@ -14,14 +13,14 @@ public class CurrencyList {
     @Attribute(name="name")
     private String name;
     @ElementList(name="Valute", inline = true)
-    private List<Currency> currencyList;
+    private List<CurrencyBean> currencyBeanList;
 
-    public List<Currency> getCurrencyList() {
-        return currencyList;
+    public List<CurrencyBean> getCurrencyBeanList() {
+        return currencyBeanList;
     }
 
-    public void setCurrencyList(List<Currency> currencyList) {
-        this.currencyList = currencyList;
+    public void setCurrencyBeanList(List<CurrencyBean> currencyBeanList) {
+        this.currencyBeanList = currencyBeanList;
     }
 
     public String getDate() {
