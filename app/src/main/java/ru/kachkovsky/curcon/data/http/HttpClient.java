@@ -166,19 +166,4 @@ public class HttpClient {
         }
         return response;
     }
-
-    private static final int BUFFER_SIZE = 16384; //2 ^ 14
-
-    private byte[] streamToBytes(InputStream is) throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        int nRead;
-        byte[] data = new byte[BUFFER_SIZE];
-
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, nRead);
-        }
-        buffer.flush();
-        return buffer.toByteArray();
-    }
 }
