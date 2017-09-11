@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:digits="0123456789,"
             android:inputType="numberDecimal"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:singleLine="true" />
 
         <Spinner
             android:id="@+id/spinnerCurrencyFrom"
@@ -28,7 +29,8 @@
             android:id="@+id/editTextAmountOfCurrencyTo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:singleLine="true"/>
 
         <Spinner
             android:id="@+id/spinnerCurrencyTo"
