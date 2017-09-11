@@ -105,7 +105,7 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
             editTextTo.setText(ConversionHelper.getRussianBigDecimalFormat().format(result));
             //editTextTo.setText(result.toPlainString());
         } catch (Exception e) {
-            Log.d(TAG, "Cann't convert", e);
+            Log.d(TAG, "Can't convert", e);
         }
     }
 
