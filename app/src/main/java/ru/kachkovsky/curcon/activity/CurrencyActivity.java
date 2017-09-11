@@ -4,12 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 
 import ru.kachkovsky.curcon.R;
 import ru.kachkovsky.curcon.activity.adapter.CurrencyAdapter;
-import ru.kachkovsky.curcon.activity.helper.NetworkLayoutSwitch;
+import ru.kachkovsky.curcon.activity.helper.LayoutSwitch;
 import ru.kachkovsky.curcon.data.bean.CurrencyBean;
 import ru.kachkovsky.curcon.data.bean.CurrencyList;
 import ru.kachkovsky.curcon.data.helper.ConversionHelper;
@@ -34,7 +31,18 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
     private Spinner spinnerCurrencyTo;
     private EditText editTextFrom;
     private TextView editTextTo;
-    private NetworkLayoutSwitch layoutSwitch = new NetworkLayoutSwitch(R.id.content, R.id.layoutProgress, R.id.layoutRetry);
+
+    enum State {
+        DATA,
+        PROGRESS,
+        RETRY;
+    }
+
+    private LayoutSwitch<State> layoutSwitch = new LayoutSwitch<>(
+            new Pair<>(State.DATA, R.id.content),
+            new Pair<>(State.PROGRESS, R.id.layoutProgress),
+            new Pair<>(State.RETRY, R.id.layoutRetry)
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +57,7 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
 
             @Override
             public void onClick(View view) {
-                layoutSwitch.showProgressLayout(CurrencyActivity.this);
+                layoutSwitch.showLayout(CurrencyActivity.this, State.PROGRESS);
                 getSupportLoaderManager().restartLoader(LoaderIds.CBR_DAILY, null, CurrencyActivity.this);
             }
         });
@@ -77,9 +85,9 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
             list.addAll(data.getCurrencyBeanList());
             spinnerCurrencyFrom.setAdapter(new CurrencyAdapter(this, list));
             spinnerCurrencyTo.setAdapter(new CurrencyAdapter(this, list));
-            layoutSwitch.showDataLayout(this);
+            layoutSwitch.showLayout(CurrencyActivity.this, State.DATA);
         } else {
-            layoutSwitch.showRetryLayout(this);
+            layoutSwitch.showLayout(CurrencyActivity.this, State.RETRY);
         }
     }
 
