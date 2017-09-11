@@ -1,6 +1,5 @@
 package ru.kachkovsky.curcon.activity;
 
-import android.icu.util.Currency;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
@@ -15,11 +14,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
 
 import ru.kachkovsky.curcon.R;
 import ru.kachkovsky.curcon.activity.adapter.CurrencyAdapter;
 import ru.kachkovsky.curcon.data.bean.CurrencyBean;
 import ru.kachkovsky.curcon.data.bean.CurrencyList;
+import ru.kachkovsky.curcon.data.helper.ConversionHelper;
+import ru.kachkovsky.curcon.data.helper.CurrencyBeans;
 import ru.kachkovsky.curcon.data.loader.CbrDailyLoader;
 import ru.kachkovsky.curcon.data.loader.LoaderIds;
 
@@ -38,7 +46,7 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
         spinnerCurrencyFrom = (Spinner) findViewById(R.id.spinnerCurrencyFrom);
         spinnerCurrencyTo = (Spinner) findViewById(R.id.spinnerCurrencyTo);
         editTextFrom = (EditText) findViewById(R.id.editTextAmountOfCurrencyFrom);
-        editTextTo = (EditText) findViewById(R.id.editTextAmountOfCurrencyFrom);
+        editTextTo = (EditText) findViewById(R.id.editTextAmountOfCurrencyTo);
 
         spinnerCurrencyFrom.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -63,19 +71,18 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
             }
         });
         editTextFrom.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                calculate();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                calculate();
             }
         });
         getSupportLoaderManager().initLoader(LoaderIds.CBR_DAILY, null, this);
@@ -89,8 +96,13 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
     @Override
     public void onLoadFinished(Loader<CurrencyList> loader, CurrencyList data) {
         Log.d(TAG, "Load finished");
-        spinnerCurrencyFrom.setAdapter(new CurrencyAdapter(this, data.getCurrencyBeanList()));
-        spinnerCurrencyTo.setAdapter(new CurrencyAdapter(this, data.getCurrencyBeanList()));
+        if (data != null) {
+            ArrayList<CurrencyBean> list = new ArrayList<>(data.getCurrencyBeanList().size() + 1);
+            list.add(CurrencyBeans.getDefaultCurrencyBean());
+            list.addAll(data.getCurrencyBeanList());
+            spinnerCurrencyFrom.setAdapter(new CurrencyAdapter(this, list));
+            spinnerCurrencyTo.setAdapter(new CurrencyAdapter(this, list));
+        }
     }
 
     @Override
@@ -98,10 +110,17 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     public void calculate() {
-        CurrencyBean currencyBeanFrom =(CurrencyBean) spinnerCurrencyFrom.getSelectedItem();
-        CurrencyBean currencyBeanTo =(CurrencyBean) spinnerCurrencyTo.getSelectedItem();
-        Editable text = editTextFrom.getText();
-        
-
+        CurrencyBean currencyBeanFrom = (CurrencyBean) spinnerCurrencyFrom.getSelectedItem();
+        CurrencyBean currencyBeanTo = (CurrencyBean) spinnerCurrencyTo.getSelectedItem();
+        try {
+            String valueFrom = editTextFrom.getText().toString();
+            BigDecimal moneyFromDecimal = ConversionHelper.parseRussianValue(valueFrom);
+            BigDecimal result = ConversionHelper.convertMoney(currencyBeanFrom, currencyBeanTo, moneyFromDecimal);
+            editTextTo.setText(ConversionHelper.getRussianBigDecimalFormat().format(result));
+            //editTextTo.setText(result.toPlainString());
+        } catch (Exception e) {
+            Log.d(TAG, "Cann't convert", e);
+        }
     }
+
 }
