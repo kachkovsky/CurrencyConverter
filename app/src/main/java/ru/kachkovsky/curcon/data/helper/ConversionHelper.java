@@ -19,7 +19,7 @@ public class ConversionHelper {
     private static final DecimalFormat RU_DECIMAL_FORMAT;
 
     static {
-        RU_DECIMAL_FORMAT = new DecimalFormat("", new DecimalFormatSymbols(new Locale("ru")));
+        RU_DECIMAL_FORMAT = new DecimalFormat("0.##", new DecimalFormatSymbols(new Locale("ru")));
         RU_DECIMAL_FORMAT.setParseBigDecimal(true);
     }
 

@@ -53,42 +53,11 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
                 getSupportLoaderManager().restartLoader(LoaderIds.CBR_DAILY, null, CurrencyActivity.this);
             }
         });
+        findViewById(R.id.buttonApply).setOnClickListener(new View.OnClickListener() {
 
-        spinnerCurrencyFrom.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+            public void onClick(View view) {
                 calculate();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                calculate();
-            }
-        });
-        spinnerCurrencyTo.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-                calculate();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                calculate();
-            }
-        });
-        editTextFrom.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                calculate();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
         });
         getSupportLoaderManager().initLoader(LoaderIds.CBR_DAILY, null, this);
