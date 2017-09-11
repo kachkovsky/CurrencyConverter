@@ -15,13 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Locale;
 
 import ru.kachkovsky.curcon.R;
 import ru.kachkovsky.curcon.activity.adapter.CurrencyAdapter;
@@ -40,7 +34,7 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
     private Spinner spinnerCurrencyTo;
     private EditText editTextFrom;
     private TextView editTextTo;
-    private NetworkLayoutSwitch layoutSwitch = new NetworkLayoutSwitch(R.id.content, R.id.progress_layout, R.id.retry_layout);
+    private NetworkLayoutSwitch layoutSwitch = new NetworkLayoutSwitch(R.id.content, R.id.layoutProgress, R.id.layoutRetry);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +45,15 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
         editTextFrom = (EditText) findViewById(R.id.editTextAmountOfCurrencyFrom);
         editTextTo = (TextView) findViewById(R.id.editTextAmountOfCurrencyTo);
         editTextTo.setTextIsSelectable(true);
+        findViewById(R.id.buttonRetry).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                layoutSwitch.showProgressLayout(CurrencyActivity.this);
+                getSupportLoaderManager().restartLoader(LoaderIds.CBR_DAILY, null, CurrencyActivity.this);
+            }
+        });
+
         spinnerCurrencyFrom.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
