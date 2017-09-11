@@ -1,35 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editTextAmountOfCurrencyFrom"
+    <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:digits="0123456789,"
-        android:maxLines="1"/>
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <Spinner
-        android:id="@+id/spinnerCurrencyFrom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        <EditText
+            android:id="@+id/editTextAmountOfCurrencyFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:digits="0123456789,"
+            android:inputType="numberDecimal"
+            android:maxLines="1" />
 
-    <EditText
-        android:id="@+id/editTextAmountOfCurrencyTo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="none"
-        android:editable="false"
-        android:maxLines="1"/>
+        <Spinner
+            android:id="@+id/spinnerCurrencyFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <Spinner
-        android:id="@+id/spinnerCurrencyTo"
+        <TextView
+            android:id="@+id/editTextAmountOfCurrencyTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1" />
+
+        <Spinner
+            android:id="@+id/spinnerCurrencyTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/retry_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+
+        <Button
+            android:id="@+id/button_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/retry_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_retry"
+            android:layout_centerHorizontal="true"
+            android:inputType="textPersonName"
+            android:text="@string/retry_button_text" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+</FrameLayout>

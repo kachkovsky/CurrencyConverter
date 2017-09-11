@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -24,6 +25,7 @@ import java.util.Locale;
 
 import ru.kachkovsky.curcon.R;
 import ru.kachkovsky.curcon.activity.adapter.CurrencyAdapter;
+import ru.kachkovsky.curcon.activity.helper.NetworkLayoutSwitch;
 import ru.kachkovsky.curcon.data.bean.CurrencyBean;
 import ru.kachkovsky.curcon.data.bean.CurrencyList;
 import ru.kachkovsky.curcon.data.helper.ConversionHelper;
@@ -37,7 +39,8 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
     private Spinner spinnerCurrencyFrom;
     private Spinner spinnerCurrencyTo;
     private EditText editTextFrom;
-    private EditText editTextTo;
+    private TextView editTextTo;
+    private NetworkLayoutSwitch layoutSwitch = new NetworkLayoutSwitch(R.id.content, R.id.progress_layout, R.id.retry_layout);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +49,8 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
         spinnerCurrencyFrom = (Spinner) findViewById(R.id.spinnerCurrencyFrom);
         spinnerCurrencyTo = (Spinner) findViewById(R.id.spinnerCurrencyTo);
         editTextFrom = (EditText) findViewById(R.id.editTextAmountOfCurrencyFrom);
-        editTextTo = (EditText) findViewById(R.id.editTextAmountOfCurrencyTo);
-
+        editTextTo = (TextView) findViewById(R.id.editTextAmountOfCurrencyTo);
+        editTextTo.setTextIsSelectable(true);
         spinnerCurrencyFrom.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -102,6 +105,9 @@ public class CurrencyActivity extends AppCompatActivity implements LoaderCallbac
             list.addAll(data.getCurrencyBeanList());
             spinnerCurrencyFrom.setAdapter(new CurrencyAdapter(this, list));
             spinnerCurrencyTo.setAdapter(new CurrencyAdapter(this, list));
+            layoutSwitch.showDataLayout(this);
+        } else {
+            layoutSwitch.showRetryLayout(this);
         }
     }
 
