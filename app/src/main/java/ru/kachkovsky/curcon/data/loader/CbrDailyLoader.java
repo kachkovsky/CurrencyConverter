@@ -1,6 +1,7 @@
 package ru.kachkovsky.curcon.data.loader;
 
 import android.content.Context;
+import android.util.Log;
 
 import ru.kachkovsky.curcon.data.bean.CurrencyList;
 import ru.kachkovsky.curcon.data.http.HttpClient.RequestParameters;
@@ -24,6 +25,7 @@ public class CbrDailyLoader extends AsyncBaseLoader {
         } else {
             RequestParameters requestParameters = getRequestParameters();
             CurrencyList currencyList = downloader.doRequestOnlyFromCache(requestParameters, xmlResponseParser);
+            data = currencyList;
             if (currencyList != null) {
                 deliverResult(currencyList);
             }
@@ -33,8 +35,13 @@ public class CbrDailyLoader extends AsyncBaseLoader {
 
     @Override
     public Object loadInBackground() {
+        Log.d(TAG, "loadInBackground");
         RequestParameters requestParameters = getRequestParameters();
-        return downloader.doRequestOnlyFromNet(requestParameters, xmlResponseParser);
+        CurrencyList currencyList = downloader.doRequestOnlyFromNet(requestParameters, xmlResponseParser);
+        if (currencyList == null) {
+            return data;
+        }
+        return currencyList;
     }
 
     private RequestParameters getRequestParameters() {
